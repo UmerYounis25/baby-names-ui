@@ -5,14 +5,14 @@ import {
 	SafeAreaView,
 	StyleSheet,
 } from 'react-native';
-import { useSelector } from 'react-redux';
-import {AddInput} from '../components/';
+import {AddInput,ListGroup} from '../components/';
 
 export default function App() {
 	return (
 		<SafeAreaView style={styles.container}>
 			<View style={styles.card}>
 				<Text style={styles.heading}>Baby Names</Text>
+				<ListGroup/>
 				<AddInput/>
 			</View>
 		</SafeAreaView>
