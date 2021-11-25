@@ -1,8 +1,9 @@
-import { ADD_NAME, SEARCH_NAMES, DELETE_NAME } from '../types';
+import { ADD_NAME, SEARCH_NAMES, DELETE_NAME, ON_NAME_EDIT, UPDATE_NAME } from '../types';
 
 const initialState = {
 	names: [],
 	searchValues:[],
+	editedName:{}
 };
 
 export default function Names(state = initialState, action) {
@@ -12,8 +13,11 @@ export default function Names(state = initialState, action) {
 		case SEARCH_NAMES:
 			return { ...state, searchValues: action.payload };
 		case DELETE_NAME:
-			return { ...state, names: action.payload, searchValues:[] };
-
+			return { ...state, names: action.payload, searchValues: [] };
+		case UPDATE_NAME:
+			return { ...state, names: action.payload, searchValues: [], editedName:{} };
+		case ON_NAME_EDIT:
+			return { ...state, editedName: action.payload };
 		default:
 			return state;
 	}

@@ -1,12 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addName } from '../store/actions/AddNames';
+import { UpdateNames } from '../store/actions/UpdateNames';
 
 export const AddInput = () => {
 	const dispatch = useDispatch();
 	const [addTerm, setAddTerm] = React.useState('');
 	const [AddError, setAddError] = React.useState('');
+	const {editedName}=useSelector((state) => state.names);
+
+	useEffect(() => {
+		if (editedName) {
+			setAddTerm(editedName.name);
+		}
+	}, [editedName]);
 
 	return (
 		<View>
@@ -21,9 +29,18 @@ export const AddInput = () => {
 				<TouchableOpacity
 					style={styles.button}
 					onPress={() => {
-						addTerm.length >= 1
-							? (setAddError(''), dispatch(addName(addTerm)), setAddTerm(''))
-							: setAddError('Please enter the valid value');
+						if(addTerm.length >= 1) {
+							setAddError('');
+							setAddTerm('');
+							if(editedName.name){
+								dispatch(UpdateNames(addTerm, editedName.id));
+							}else{
+								dispatch(addName(addTerm));
+							}
+
+						}else{
+							setAddError('Please enter a name');
+						}
 					}}
 				>
 					<Text style={styles.btnText}>Add</Text>
