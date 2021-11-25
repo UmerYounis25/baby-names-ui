@@ -1,7 +1,10 @@
 import * as React from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { useDispatch } from 'react-redux';
+import { searchNames } from '../store/actions/SearchNames';
 
 export const SearchInput = () => {
+	const dispatch = useDispatch();
 	const [searchTerm, setSearchTerm] = React.useState('');
 	const [searchError, setSearchError] = React.useState('');
 	return (
@@ -21,6 +24,7 @@ export const SearchInput = () => {
 						searchTerm.length >= 1
 							? setSearchError('')
 							: setSearchError('Please enter the valid value');
+						dispatch(searchNames(searchTerm));
 					}}
 				>
 					<Text style={styles.btnText}>Search</Text>
