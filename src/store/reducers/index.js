@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
-import BabyNames from './BabyNames';
+import Names from './Names';
 
-const rootReducer = combineReducers({ babyName: BabyNames });
+const rootReducer = combineReducers({ names: Names });
 
 export default rootReducer;

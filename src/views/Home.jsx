@@ -1,16 +1,51 @@
 import * as React from 'react';
-import { View, Text } from 'react-native';
+import {
+	View,
+	Text,
+	SafeAreaView,
+	StyleSheet,
+} from 'react-native';
+import { useSelector } from 'react-redux';
+import {AddInput} from '../components/';
 
 export default function App() {
 	return (
-		<View
-			style={{
-				flex: 1,
-				justifyContent: 'center',
-				alignItems: 'center',
-			}}
-		>
-			<Text>hello world</Text>
-		</View>
+		<SafeAreaView style={styles.container}>
+			<View style={styles.card}>
+				<Text style={styles.heading}>Baby Names</Text>
+				<AddInput/>
+			</View>
+		</SafeAreaView>
 	);
 }
+
+
+const styles = StyleSheet.create({
+	container: {
+		backgroundColor: '#ebeef0db',
+		alignItems: 'center',
+		height: '100%',
+	},
+	card: {
+		backgroundColor: '#fff',
+		marginTop: 40,
+		shadowColor: '#000',
+		shadowOffset: {
+			width: 0,
+			height: 0,
+		},
+		paddingHorizontal: 24,
+		paddingVertical: 40,
+		borderRadius: 15,
+		shadowOpacity: 0.1,
+		shadowRadius: 9,
+		width: '88%',
+	},
+	heading: {
+		fontSize: 28,
+		fontWeight: 'bold',
+		textAlign: 'center',
+		marginBottom: 30,
+	},
+	
+});
