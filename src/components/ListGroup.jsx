@@ -1,33 +1,74 @@
 import React from 'react';
+import { Platform } from 'react-native';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
-import { useSelector } from 'react-redux';
 import { MaterialIcons } from '@expo/vector-icons';
+import { useDispatch, useSelector } from 'react-redux';
 import { Entypo } from '@expo/vector-icons';
 import { DeleteNames } from '../store/actions/DeleteNames';
 import { GetLocalStorageList } from '../store/actions/GetLocalStorageList';
 import { OnNameEdit } from '../store/actions/OnNameEdit';
-import { useDispatch } from 'react-redux';
+import { localStorageNameList } from '../utils/types';
+import MyStorage from '../utils/MyStorage';
+import SearchResult from "./SearchResult";
 
 export const ListGroup = () => {
 	const dispatch = useDispatch();
-	const { names, searchValues } = useSelector((state) => state.names);
+	const myStorage = new MyStorage();
+	const [nameList, setNameList] = React.useState([]);
+	const { names, searchValues, isSearching } = useSelector((state) => state.names);
 
 	React.useEffect(() => {
-		names.length >= 1 && localStorage.setItem('nameList', JSON.stringify(names));
+		'ios' == Platform.OS
+			? names.length >= 1 &&
+			  myStorage.storeDataForIos(localStorageNameList, JSON.stringify(names))
+			: names.length >= 1 &&
+			  myStorage.addDataToStorage(localStorageNameList, JSON.stringify(names));
+		setNameList(names);
 	}, [names]);
 
 	React.useEffect(() => {
-		const nameList = JSON.parse(localStorage.getItem('nameList'));
-		nameList && dispatch(GetLocalStorageList(nameList));
+		searchValues.length >= 1 && setNameList(searchValues);
+	}, [searchValues]);
+
+	React.useEffect(() => {
+		if (Platform.OS === 'ios') {
+			const value = myStorage.getDataForIos(localStorageNameList);
+			value.then((value) => {
+				if (null !== value) {
+					const a = JSON.parse(value);
+					dispatch(GetLocalStorageList(a));
+				}
+			});
+		} else {
+			const nameList = JSON.parse(myStorage.readDataFromStorage(localStorageNameList));
+			nameList && dispatch(GetLocalStorageList(nameList));
+		}
 	}, []);
+
+	const resetNameList = () => {
+		setNameList(names);
+	}
 
 	return (
 		<View style={styles.listGroup}>
-			{names.length >= 1 ? (
+			{searchValues.length >= 1 ? (
+					<SearchResult
+						message='Search Results'
+						resetNameList={resetNameList}
+					></SearchResult>
+			) : (
+				isSearching && (
+					<SearchResult
+						message='Result not Found'
+						resetNameList={resetNameList}
+					></SearchResult>
+				)
+			)}
+			{nameList.length >= 1 ? (
 				<FlatList
-					data={searchValues.length >= 1 ? searchValues : names}
+					data={nameList}
 					renderItem={({ item, index }) => (
-						<View style={styles.listItem}>
+						<View key={item.id} style={styles.listItem}>
 							<View style={styles.itemBox}>
 								<Text style={styles.item}>{index + 1}</Text>
 								<Text style={styles.item}>{item.name}</Text>
@@ -47,7 +88,9 @@ export const ListGroup = () => {
 					)}
 				/>
 			) : (
-				<Text style={styles.title}>Please add some names to get started</Text>
+				!isSearching && (
+					<Text style={styles.title}>Please add some names to get started</Text>
+				)
 			)}
 		</View>
 	);
@@ -77,5 +120,21 @@ const styles = StyleSheet.create({
 	itemBox: {
 		flexDirection: 'row',
 		alignItems: 'center',
+	},
+	searchBox: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		marginBottom: 30,
+	},
+	searchBtn: {
+		padding: 7,
+		borderRadius: 5,
+		borderColor: '#ccc',
+		fontSize: 13.9,
+		borderWidth: 1,
+	},
+	searchText: {
+		fontSize: 14.7,
 	},
 });

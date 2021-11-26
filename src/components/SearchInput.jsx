@@ -1,12 +1,18 @@
 import * as React from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useDispatch,useSelector } from 'react-redux';
 import { searchNames } from '../store/actions/SearchNames';
 
 export const SearchInput = () => {
+	const {clearSearchInput}= useSelector((state) => state.names);
 	const dispatch = useDispatch();
 	const [searchTerm, setSearchTerm] = React.useState('');
 	const [searchError, setSearchError] = React.useState('');
+
+	React.useEffect(() => {
+		clearSearchInput&&setSearchTerm('');
+	}, [clearSearchInput]);
+
 	return (
 		<View>
 			<View style={styles.inputGroup}>

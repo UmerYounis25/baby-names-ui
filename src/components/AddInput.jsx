@@ -6,14 +6,12 @@ import { UpdateNames } from '../store/actions/UpdateNames';
 
 export const AddInput = () => {
 	const dispatch = useDispatch();
+	const { editedName } = useSelector((state) => state.names);
 	const [addTerm, setAddTerm] = React.useState('');
 	const [AddError, setAddError] = React.useState('');
-	const {editedName}=useSelector((state) => state.names);
 
 	useEffect(() => {
-		if (editedName) {
-			setAddTerm(editedName.name);
-		}
+		editedName && setAddTerm(editedName.name);
 	}, [editedName]);
 
 	return (
@@ -29,16 +27,13 @@ export const AddInput = () => {
 				<TouchableOpacity
 					style={styles.button}
 					onPress={() => {
-						if(addTerm.length >= 1) {
+						if (addTerm.length >= 1) {
 							setAddError('');
 							setAddTerm('');
-							if(editedName.name){
-								dispatch(UpdateNames(addTerm, editedName.id));
-							}else{
-								dispatch(addName(addTerm));
-							}
-
-						}else{
+							editedName.name
+								? dispatch(UpdateNames(addTerm, editedName.id))
+								: dispatch(addName(addTerm));
+						} else {
 							setAddError('Please enter a name');
 						}
 					}}
