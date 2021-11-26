@@ -6,7 +6,7 @@ import {
 	StyleSheet,
 } from 'react-native';
 
-import {AddInput,ListGroup,SearchInput} from '../components/';
+import { AddInput, ListGroup, SearchInput, } from '../components/';
 
 export default function App() {
 	return (
