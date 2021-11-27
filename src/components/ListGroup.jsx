@@ -9,13 +9,17 @@ import { GetLocalStorageList } from '../store/actions/GetLocalStorageList';
 import { OnNameEdit } from '../store/actions/OnNameEdit';
 import { localStorageNameList } from '../utils/types';
 import MyStorage from '../utils/MyStorage';
-import SearchResult from "./SearchResult";
+import SearchResult from './SearchResult';
 
 export const ListGroup = () => {
 	const dispatch = useDispatch();
 	const myStorage = new MyStorage();
 	const [nameList, setNameList] = React.useState([]);
 	const { names, searchValues, isSearching } = useSelector((state) => state.names);
+
+	const resetNameList = () => {
+		setNameList(names);
+	};
 
 	React.useEffect(() => {
 		'ios' == Platform.OS
@@ -45,17 +49,17 @@ export const ListGroup = () => {
 		}
 	}, []);
 
-	const resetNameList = () => {
-		setNameList(names);
-	}
+	React.useEffect(() => {
+		if (nameList.length >= 1) {
+			const sortedArray = nameList.sort((a, b) => b.createdAt - a.createdAt);
+			setNameList(sortedArray);
+		}
+	}, [nameList]);
 
 	return (
 		<View style={styles.listGroup}>
 			{searchValues.length >= 1 ? (
-					<SearchResult
-						message='Search Results'
-						resetNameList={resetNameList}
-					></SearchResult>
+				<SearchResult message='Search Results' resetNameList={resetNameList}></SearchResult>
 			) : (
 				isSearching && (
 					<SearchResult
@@ -88,9 +92,7 @@ export const ListGroup = () => {
 					)}
 				/>
 			) : (
-				!isSearching && (
-					<Text style={styles.title}>Please add some names to get started</Text>
-				)
+				!isSearching && <Text style={styles.title}>Please add some names to get started</Text>
 			)}
 		</View>
 	);
@@ -100,6 +102,7 @@ const styles = StyleSheet.create({
 	listGroup: {
 		marginTop: 35,
 		marginBottom: 35,
+		zIndex:-1
 	},
 	listItem: {
 		padding: 10,

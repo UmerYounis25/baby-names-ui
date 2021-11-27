@@ -1,26 +1,24 @@
 import * as React from 'react';
-import {
-	View,
-	Text,
-	SafeAreaView,
-	StyleSheet,
-} from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet } from 'react-native';
+import { useSelector } from 'react-redux';
 
-import { AddInput, ListGroup, SearchInput, } from '../components/';
+import { AddInput, ListGroup, SearchInput, FilterBy } from '../components/';
 
 export default function App() {
+	const { names } = useSelector((state) => state.names);
+
 	return (
 		<SafeAreaView style={styles.container}>
 			<View style={styles.card}>
 				<Text style={styles.heading}>Baby Names</Text>
 				<SearchInput />
+				{names.length >= 1 && <FilterBy />}
 				<ListGroup />
 				<AddInput />
 			</View>
 		</SafeAreaView>
 	);
 }
-
 
 const styles = StyleSheet.create({
 	container: {
@@ -49,5 +47,4 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 		marginBottom: 30,
 	},
-	
 });

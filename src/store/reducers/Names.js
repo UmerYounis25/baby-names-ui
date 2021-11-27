@@ -6,14 +6,15 @@ import {
 	UPDATE_NAME,
 	GET_LOCAL_STORAGE_LIST,
 	CLEAR_SEARCH,
+	SORT_ITEMS,
 } from '../types';
 
 const initialState = {
 	names: [],
-	searchValues:[],
-	editedName:{},
+	searchValues: [],
+	editedName: {},
 	isSearching: false,
-	clearSearchInput:false
+	clearSearchInput: false,
 };
 
 export default function Names(state = initialState, action) {
@@ -31,7 +32,17 @@ export default function Names(state = initialState, action) {
 		case GET_LOCAL_STORAGE_LIST:
 			return { ...state, names: action.payload };
 		case CLEAR_SEARCH:
-			return { ...state, searchValues: action.payload, isSearching: false, clearSearchInput: true };
+			return {
+				...state,
+				searchValues: action.payload,
+				isSearching: false,
+				clearSearchInput: true,
+			};
+		case SORT_ITEMS:
+			return {
+				...state,
+				name: action.payload,
+			};
 		default:
 			return state;
 	}
